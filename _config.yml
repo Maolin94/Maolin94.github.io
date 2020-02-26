@@ -1,0 +1,113 @@
+# Site settings
+title: YangZhiyuan Blog
+SEOTitle: 杨致远的博客 | YangZhiyuan Blog
+header-img: img/post-bg-desk.jpg    #主页上面的图片
+email: yang3781590@163.com
+description: "Every failure is leading towards success."
+keyword: "YangZhiyuan, Change the World"
+url: "yzy1996.github.io"          # your host, for absolute URL
+baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
+github_repo: "" # you code repository
+
+# Sidebar settings
+sidebar: true                           # whether or not using Sidebar.
+sidebar-about-description: "Change the World!"
+sidebar-avatar: /img/my-photo.jpg      # 你的头像
+
+
+
+# SNS settings   你的社交链接
+RSS: false
+# weibo_username:     
+zhihu_username:     yzy_1996
+github_username:    yzy1996
+jianshu_username:   1b9f1b107a11
+#twitter_username:   
+
+
+
+
+# Build settings
+# from 2016, 'pygments' is unsupported on GitHub Pages. Use 'rouge' for highlighting instead.
+permalink: pretty
+paginate: 10
+exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
+anchorjs: true                          # if you want to customize anchor. check out line:181 of `post.html`
+
+
+
+# Gems
+# from PR#40, to support local preview for Jekyll 3.0
+plugins: [jekyll-paginate]
+
+
+
+
+
+# Markdown settings
+# replace redcarpet to kramdown,
+# although redcarpet can auto highlight code, the lack of header-id make the catalog impossible, so I switch to kramdown
+# document: http://jekyllrb.com/docs/configuration/#kramdown
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM                            # use Github Flavored Markdown !important
+
+
+
+# 评论系统
+# Disqus（https://disqus.com/）
+# disqus_username: qiubaiying
+
+# Gitalk
+#gitalk:
+#  enable: true    #是否开启Gitalk评论
+# clientID: f2c84e7629bb1446c1a4                            #生成的clientID
+#  clientSecret: ca6d6139d1e1b8c43f8b2e19492ddcac8b322d0d    #生成的clientSecret
+#  repo: qiubaiying.github.io    #仓库名称
+#  owner: qiubaiying    #github用户名
+# admin: qiubaiying
+#  distractionFreeMode: true #是否启用类似FB的阴影遮罩
+
+
+# 统计
+
+# Analytics settings
+# Baidu Analytics
+#ba_track_id: b50bf2b12b5338a1845e33832976fd68
+
+# Google Analytics
+#ga_track_id: 'UA-90855596-1'            # Format: UA-xxxxxx-xx
+#ga_domain: 
+# 默认的是 auto, 这里我是自定义了的域名，你如果没有自己的域名，需要改成auto
+
+
+
+
+
+# Featured Tags
+featured-tags: true                     # 是否使用首页标签
+featured-condition-size: 1              # 相同标签数量大于这个数，才会出现在首页
+
+
+
+# Progressive Web Apps
+chrome-tab-theme-color: "#000000"
+service-worker: true
+
+
+# Friends  友情链接
+friends: [
+    {
+        title: "CSDN",
+        href: "https://blog.csdn.net/"
+    },{
+        title: "Github",
+        herf: "https://github.com/"
+    },{
+        title: "Stackoverflow",
+        herf: "https://stackoverflow.com/"
+    }      
+]
+
+port: 4001

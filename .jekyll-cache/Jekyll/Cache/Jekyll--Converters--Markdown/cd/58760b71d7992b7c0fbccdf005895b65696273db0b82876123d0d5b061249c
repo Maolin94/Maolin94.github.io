@@ -1,0 +1,11 @@
+I"�<h1 id="vs-code使用">VS Code使用</h1>
+
+<p>现在真的是逢人就推荐vs code</p>
+
+<p>1、打开的编译器</p>
+
+<p>如果你是单击代码文件，其实是浏览，再点击其他的会覆盖掉，双击才是打开新的tab，你可以观察单击时显示的文件名是斜体，而双击时才是正体</p>
+
+<p>如果要修改，设置的名为：<code class="highlighter-rouge">workbench.editor.enablePreview:false</code></p>
+
+:ET
