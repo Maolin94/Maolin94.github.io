@@ -60,10 +60,10 @@ kramdown:
 # disqus_username: qiubaiying
 
 # Gitalk
-gitalk:
+gitalk: true
 enable: true    #是否开启Gitalk评论
-clientID: 2881ac0d7b5fcdf89004                           #生成的clientID
-clientSecret: 52a5e1ec3c4728a5f6edc6924aa53c6c14740281    #生成的clientSecret
+clientID: 7e37e24d6433f26f954d                           #生成的clientID
+clientSecret: 4e1a844099af918f620cbcc5930b626b83bd99c4    #生成的clientSecret
 repo: Maolin94.github.io    #仓库名称
 owner: Maolin94    #github用户名
 admin: Maolin94
