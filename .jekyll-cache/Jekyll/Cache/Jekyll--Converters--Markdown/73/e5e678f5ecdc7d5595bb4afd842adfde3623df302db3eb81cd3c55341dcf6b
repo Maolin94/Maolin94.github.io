@@ -1,0 +1,60 @@
+I"+<h1 id="排序问题"><strong>排序问题</strong></h1>
+
+<p><strong>问题描述</strong>：将无序的列表变为有序列表，输入为无序列表，输出为有序列表。</p>
+
+<p><strong>排序LowB三人组</strong>：(时间复杂度为：O(n2)，算法关键点：有序区和无序区)</p>
+
+<h2 id="冒泡排序bubble_sort">冒泡排序（bubble_sort)</h2>
+
+<p><strong>算法思路</strong>：列表每两个相邻的数，如果前边的比后边的大，那么交换这两个数。</p>
+
+<p><strong>代码关键点</strong>：趟(每一趟冒出无序区中最大/最小的值）、无序区</p>
+
+<pre><code class="language-Python">def bubble_sort(list):
+    for i in range(len(list)-1):  #i表示第i趟，一共走n-1或n趟
+        exchange = False  #优化最坏情况，当遍历一趟未发生变化，这表明已经有序
+        for j in range(len(list)-1-i):  #j表示指针的位置，无序区[0, n-1-i]
+            if list[j] &gt; list[j+1]:  #如果后一个小于指针位置的值，则交换两者
+                list[j], list[j+1] = list[j+1], list[j]
+                exchange = True
+        if not exchange:
+            break
+</code></pre>
+
+<h2 id="选择排序select_sort">选择排序（select_sort）</h2>
+
+<p><strong>算法思路</strong>：一趟遍历记录最小的数，放到第一个位置；再一趟遍历记录剩余列表中最小的数，继续放置。</p>
+
+<p><strong>代码关键点</strong>：无序区、最小数的位置</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">select_sort</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>  <span class="c1">#遍历n-1或n趟
+</span>        <span class="c1">#第i趟无序区的范围为[i, len(list))
+</span>        <span class="n">min_pos</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">list</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">min_pos</span><span class="p">]:</span>
+                <span class="n">min_pos</span> <span class="o">=</span> <span class="n">j</span>
+        <span class="c1">#将找到的无序区最小值与无序区第一个值进行交换
+</span>        <span class="nb">list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">min_pos</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">min_pos</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</code></pre></div></div>
+
+<h2 id="插入排序insert_sort">插入排序（insert_sort）</h2>
+
+<p><strong>算法思路</strong>：列表被分为有序区和无序区两个部分，最初有序区只有一个元素；每次从无序区中选择一个元素，插入到有序区的位置，直到无序区变空。</p>
+
+<p><strong>代码关键点</strong>：摸到的牌、手里的牌。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">insert_sort</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">)):</span>  <span class="c1">#i为摸到牌的下标，从1开始
+</span>        <span class="n">tmp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="c1">#tmp表示摸到的牌
+</span>        <span class="c1">#将摸到的牌插入到有序区中
+</span>        <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1">#j为有序区指针，用于寻找该插入的位置
+</span>        <span class="k">while</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">list</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">tmp</span><span class="p">:</span>  <span class="c1">#只要往后挪就循环，两个条件都满足
+</span>            <span class="nb">list</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">j</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="c1">#循环结束时：要么j=-1(摸到的牌小于有序区所有牌)，
+</span>        <span class="c1">#要么list[j] &lt; tmp,将tmp插到j+1的位置
+</span>        <span class="nb">list</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+</code></pre></div></div>
+
+:ET
