@@ -1,0 +1,151 @@
+I"r<h2 id="广度优先搜索">广度优先搜索</h2>
+
+<p><strong>广度优先搜索</strong>就是一层一层的进行遍历，每层遍历都是以上一层遍历的结果作为起点，遍历一个距离能访问到的所有节点。值得注意的是，遍历过的节点不要再次遍历。</p>
+
+<p>直观上看，广度优先搜索就是多条路一起走，一般可以用于求解<strong>最短路径</strong>的问题，因为每一层遍历的节点到起点的距离是相同的，第一次遍历到终点的所经过的路径为最短路径。应该注意的是，使用BFS只能求解无权图的最短路径，即每条边的权为1。</p>
+
+<p>在程序实现时，一般采用<strong>队列</strong>这种数据结构来存储每一轮遍历得到的节点；而且需要对遍历过的节点进行<strong>标记</strong>，以防重复遍历。</p>
+
+<h3 id="1091-二进制矩阵中的最短路径中">#1091 二进制矩阵中的最短路径（中）</h3>
+<p><strong>问题描述</strong>：在一个N×N的方形网格中，每个单元格有两种状态：空（0）或者堵塞（1）。设计算法找到从左下角到右下角的最短畅通路径长度。如果不存就返回-1。每个单元格可以往八个方向走。</p>
+
+<pre><code class="language-C++">int shortestPathBinaryMatrix(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+	if (grid.size() == 0 || grid[0].size() == 0)
+		return -1;
+	int M = grid.size(), N = grid[0].size();
+	if (grid[0][0] == 1 || grid[M - 1][N - 1] == 1)  //判断边界条件
+		return -1;
+	int pathlength = 0;
+	queue&lt;Node&gt; q;
+	q.push({ 0, 0 });
+	grid[0][0] = 1;
+	vector&lt;vector&lt;int&gt;&gt; direction = { {1, -1}, {1, 0}, {1, 1}, {0, 1},
+	{0, -1}, {-1, -1}, {-1, 0}, {-1, 1} };
+	//标准的BFS写法
+	//循环条件是队列不空
+	while (!q.empty()) {
+		int size = q.size();  //队中元素个数
+		pathlength++;  //每走一层，路径长度加1
+		for (int i = 0; i &lt; size; ++i) {
+			Node currentNode = q.front();
+			int x = currentNode.x;
+			int y = currentNode.y;
+			q.pop();  //当前节点出队
+			//判断是否满足退出条件，即是否到终点
+			if (x == (M - 1) &amp;&amp; y == (N - 1))
+				return pathlength;
+			//下一个节点的所有可能情况
+			for (auto d : direction) {
+				int next_x = x + d[0], next_y = y + d[1];
+				//边界检查
+				if (next_x &lt; 0 || next_x &gt;= M || next_y &lt; 0 || next_y &gt;= N) {
+					continue;
+				}
+				//入队检查
+				if (grid[next_x][next_y] == 1)
+					continue;
+				q.push({ next_x, next_y });  //将满足条件的节点入队
+				//将走过的路进行标记，在八向探查时就进行标记，否则会超时
+				grid[next_x][next_y] = 1;
+			}
+		}
+	}
+	return -1;
+}
+
+struct Node {
+	int x;
+	int y;
+};
+</code></pre>
+
+<h3 id="279-完全平方数中">#279 完全平方数（中）</h3>
+<p><strong>问题描述</strong>：给定正整数n，找出若干个完全平方数使得他们的和等于n。返回组成和的完全平方数的最少个数。</p>
+
+<p><strong>思路</strong>：这道题在动态规划中出现过，也可以用BFS方法解决。将每个整数看成图中的一个节点，如果两个整数之差为一个平方数，那么这两个整数所在的节点就有一条边。要求解最小平方数的个数，就是求解从节点n到节点0的最短路径。</p>
+
+<pre><code class="language-C++">int numSquares(int n) {
+	int res = 0;
+	queue&lt;int&gt; q;
+	vector&lt;bool&gt; marked(n + 1);
+	q.push(n);
+	marked[n] = true;
+	while (!q.empty()) {
+		int size = q.size();
+		res++;
+		while (size &gt; 0) {
+			int curr = q.front();
+			q.pop();
+			for (int i = 1; curr - i * i &gt;= 0; i++) {
+				int next = curr - i * i;
+				if (next == 0)  //找到了
+					return res;
+				if(marked[next])  //找过了
+					continue;
+				q.push(next);
+				marked[next] = true;
+			}
+			--size;
+		}
+	}
+	return -1;
+}
+</code></pre>
+
+<h3 id="127-单词接龙中">#127 单词接龙（中）</h3>
+<p><strong>问题描述</strong>：给定两个单词（beginWord和endWord）和一个字典，找到从beginWord到endWord的最短转化序列的长度。转化规则：
+每次转化只能改变一个字母；转换过程中的中间单词必须是字典中的单词。</p>
+
+<p>说明：若不存在这样的转换序列，返回0；所有单词具有相同的长度；所有单词只由小写字母构成；字典中不存在重复单词。</p>
+
+<p><strong>思路</strong>：将问题抽象为一个无向无权图，每个单词作为一个节点，差距只有一个字母的两个单词间连接一条边。很明显，可以使用广度优先搜索寻找从beginWord到endWord的最短路径。</p>
+
+<p>算法中的关键是如何找到相邻的节点，即如何连线建图。</p>
+
+<p>直观的方法是定义一个can_Connect函数来判断两个单词是否可以相连，然后定义一个vector&lt;vector<int>&gt;来存储每个单词能够相连的单词，即这种图结构，最后利用BFS求解。这样做的时间复杂度为O(n*m)，其中n表示单词数量，m表示每个单词长度。</int></p>
+
+<p>一种更加简易的方法是，定义一个哈希表unordered_set存放每一个单词，以便方便的进行查找操作，对每个单词来说，其可能相连的单词是可以枚举的出来的，因为一共也就26个小写字母。将单词中的某个字符进行替换，查看是否在哈希表中，如果在，就表示二者相连，时间复杂度O(26*m)。</p>
+
+<pre><code class="language-C++">int ladderLength(string beginWord, string endWord, vector&lt;string&gt;&amp; wordList) {
+	//构造一个集合，方便快速查找
+	unordered_set&lt;string&gt; set;
+	for (auto&amp; ele : wordList)
+		set.insert(ele);
+
+	//构造队列，队列元素为元组，第二个元素代表层数
+	queue&lt;pair&lt;string, int&gt;&gt; q;
+	q.push({ beginWord, 1 });
+
+	while (!q.empty()) {
+		string curr_string = q.front().first;
+		int curr_step = q.front().second;
+		if (curr_string == endWord)
+			return curr_step;
+		q.pop();
+
+		//找下一个单词
+		for (int i = 0; i &lt; curr_string.size(); ++i) {
+			char ch_i = curr_string[i];
+			for (char j = 'a'; j &lt;= 'z'; ++j) {
+				if(j == ch_i) continue;
+				//修改当前节点其中一个字母，若修改后的单词在集合中，说明二者相连
+				curr_string[i] = j;  
+				//如果找到了,此时修改后的curr_string就是下一个节点
+				if (set.find(curr_string) != set.end()) {
+					q.push({ curr_string, curr_step + 1 });
+					set.erase(curr_string);  //删除该节点，相当于标记
+				}
+			}
+			curr_string[i] = ch_i;  //将当前字符恢复
+		}
+	}
+	return 0;
+}
+</code></pre>
+
+<h3 id="参考资料">参考资料</h3>
+<ol>
+  <li>https://cyc2018.github.io/CS-Notes/#/</li>
+  <li>https://leetcode-cn.com/problemset/all/</li>
+</ol>
+:ET

@@ -1,0 +1,209 @@
+I"�<h2 id="3数组区间前缀动规缓存">3.数组区间（前缀动规、缓存）</h2>
+
+<h3 id="303-数组区间和易">#303 数组区间和（易）</h3>
+<p><strong>问题描述</strong>：给定一个整数数组nums，求出数组从索引i到j范围内元素的总和，包含i，j两点。</p>
+
+<p><strong>思路</strong>：一维前缀和：设sum[j]表示数组中0到j-1的和，则有：
+<strong>sumRange(i, j)=sum[j+1]-sum[i]</strong></p>
+
+<pre><code class="language-C++">class NumArray {
+public:
+    NumArray(vector&lt;int&gt;&amp; nums) {
+        sum = new int[nums.size()+1];
+        sum[0] = 0;
+        for(int i = 0; i &lt; nums.size(); ++i){
+            sum[i+1] = sum[i] + nums[i];
+        }
+    }
+
+    int sumRange(int i, int j) {
+        return sum[j+1] - sum[i];
+    }
+
+private:
+    int* sum;
+};
+</code></pre>
+<p>注：sum的区间长度比nums多1，在0位置存储0，避免了边界的判断。</p>
+
+<p>分析：时间复杂度O(1)，空间复杂度O(n)</p>
+
+<h3 id="413-数组区间中等差子区间的个数中">#413 数组区间中等差子区间的个数（中）</h3>
+<p><strong>问题描述</strong>：函数返回数组A中所有为等差数组的个数。</p>
+
+<p><strong>思路</strong>：dp[i]表示以A[i]结尾的等差子区间的个数。当 A[i] - A[i-1] == A[i-1] - A[i-2]，那么 [A[i-2], A[i-1], A[i]] 构成一个等差递增子区间。而且在以 A[i-1] 为结尾的递增子区间的后面再加上一个 A[i]，一样可以构成新的递增子区间。综上，有：
+在 A[i] - A[i-1] == A[i-1] - A[i-2]情况下，<strong>dp[i] = dp[i-1] + 1</strong>;</p>
+
+<p>因为递增子区间不一定以最后一个元素为结尾，可以是任意一个元素结尾，因此需要返回dp数组累加的结果。</p>
+
+<pre><code class="language-C++">int numberOfArithmeticSlices(vector&lt;int&gt;&amp; A) {
+	if (A.size() &lt; 3)
+		return 0;
+	int* dp = new int[A.size()];
+	dp[0] = dp[1] = 0;
+	for (int i = 2; i &lt; A.size(); ++i) {
+		if (A[i] - A[i - 1] == A[i - 1] - A[i - 2])
+			dp[i] = dp[i - 1] + 1;
+		else
+			dp[i] = 0;
+	}
+	int res = 0;
+	for (int i = 0; i &lt; A.size(); ++i)
+		res += dp[i];
+	return res;
+}
+</code></pre>
+<p>注：因为所求结果为dp数组的和，也可以只维护一个变量就可以实现算法。</p>
+
+<h2 id="4最长公共子序列">4.最长公共子序列</h2>
+
+<h3 id="1143-最长公共子序列中">#1143 最长公共子序列（中）</h3>
+<p><strong>问题描述</strong>：给定两个字符串text1和text2，返回两个字符串最长的公共子序列。一个字符串的 子序列 是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。</p>
+
+<p><strong>示例</strong>：
+输入：text1 = “abcde”, text2 = “ace” ；
+输出：3  ；
+解释：最长公共子序列是 “ace”，它的长度为 3。</p>
+
+<p><strong>思路</strong>：</p>
+
+<p><em>状态定义</em>：</p>
+
+<p>dp[i][j]表示text1[0~i-1]和text2[0~j-1]的最长公共子序列长度。
+dp[0][0]等于0，相当于dp数组总体后移一个，免去判断边界。</p>
+
+<p><em>转移方程</em>：</p>
+
+<p>text1[i-1] == text2[j-1] 当前位置匹配上了: dp[i][j]=dp[i-1][j-1]+1</p>
+
+<p>text1[i-1] ！= text2[j-1] 当前位置没匹配上了 ：dp[i][j]=max(dp[i-1][j],dp[i][j-1]);</p>
+
+<p><em>basecase</em>:
+任何一个text长度为0时结果都是零，初始化时候就完成了basecase的赋值</p>
+
+<p><img src="https://i.loli.net/2020/03/06/xzLgfFQ79OvwKdr.png" alt="03-05-最长公共子序列.png" /></p>
+
+<pre><code class="language-C++">int longestCommonSubsequence(string text1, string text2) {
+	int len1 = text1.size();
+	int len2 = text2.size();
+	vector&lt;vector&lt;int&gt;&gt; dp(len1 + 1, vector&lt;int&gt;(len2 + 1, 0));
+	for (int i = 1; i &lt; len1 + 1; ++i) {
+		for (int j = 1; j &lt; len2 + 1; ++j) {
+			if (text1[i - 1] == text2[j - 1])
+				dp[i][j] = dp[i - 1][j - 1] + 1;
+			else
+				dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+		}
+	}
+	return dp[len1][len2];
+}
+</code></pre>
+<p>注：dp二维数组行列长度比字符串长度加1，避免边界判断。</p>
+
+<h2 id="5整数分割">5.整数分割</h2>
+
+<h3 id="343-整数拆分中">#343 整数拆分（中）</h3>
+<p><strong>问题描述</strong>：给定一个整数n，将其拆分成至少两个正整数的和，并使这些整数的乘积最大化。</p>
+
+<p><strong>示例</strong>：
+输入：10；
+输出：36；
+解释：10 = 3 + 3 + 4, 3 × 3 × 4 = 36</p>
+
+<p><strong>思路</strong>：</p>
+
+<p><em>状态定义</em>：dp[i]表示整数i能拆分的最大乘积，为了方便，将dp长度设为n+1</p>
+
+<p><em>状态转移方程</em>：将整数i拆分成j和i-j，其中j从1到i/2遍历，求取最大值；由于i-j和dp[i-j]大小不一定，所以需要去二者最大值。有：
+<strong>dp[i] = max(dp[i], j * max(dp[i-j], i-j))</strong></p>
+
+<pre><code class="language-C++">int integerBreak(int n) {
+	vector&lt;int&gt; dp(n + 1, 1);
+	for (int i = 2; i &lt;= n; ++i) {
+		for (int j = 1; j &lt;= i / 2; ++j) {
+			dp[i] = max(dp[i], max((i-j),dp[i - j]) * j);
+		}
+	}
+	return dp[n];
+}
+</code></pre>
+<p>注：j遍历到i/2即可</p>
+
+<h3 id="279-完全平方数中">#279 完全平方数（中）</h3>
+<p><strong>问题描述</strong>：给定正整数 n，找到若干个完全平方数（比如 1, 4, 9, 16, …）使得它们的和等于 n。你需要让组成和的完全平方数的个数最少。</p>
+
+<p><strong>示例</strong>：
+输入: n = 12；
+输出: 3 ；
+解释: 12 = 4 + 4 + 4.</p>
+
+<p><strong>思路</strong>：</p>
+
+<p><em>状态定义</em>：dp[i]表示整数i分解为完全平方数的最少个数。dp[0]=0</p>
+
+<p><em>状态转移方程</em>：将整数i拆为j<em>j和(i-j</em>j)，则有：
+<strong>dp[i] = min(dp[i], dp[I - j*j] +1)</strong>；j从1遍历到sqrt(i)，找寻其中的最小值。</p>
+
+<pre><code class="language-C++">int numSquares(int n) {
+	vector&lt;int&gt; dp(n + 1);
+	dp[0] = 0;
+	for (int i = 1; i &lt;= n; ++i) {
+		dp[i] = i;  //最坏情况，每次加1
+		for (int j = 1; i - j * j &gt;= 0; ++j) {
+			dp[i] = min(dp[i], dp[i - j * j] + 1);  //转移方程
+		}
+	}
+	return dp[n];
+}
+</code></pre>
+
+<h3 id="91-解码方法中">#91 解码方法（中）</h3>
+<p><strong>问题描述</strong>：一条包含字母A-Z的消息按照’A’-&gt;1，’B’-&gt;2…，’Z’-&gt;26的方式进行了编码，给定一个只包含数字的非空字符串，计算解码方法的总数。</p>
+
+<p><strong>示例</strong>：
+输入：“12”；
+输出：2；
+解释：它可以解码为 “AB”（1 2）或者 “L”（12）。</p>
+
+<p><strong>思路</strong>：</p>
+
+<p><em>状态定义</em>：dp[i]表示给定字符串s[0…i]的解码总数。dp[0]=1</p>
+
+<p><em>状态转移方程</em>：可以这样考虑：对于字符串s[0…i-1]，当字符s[i]接上后，会出现两种情况，即s[i-1]和s[i]可以构成一个字母或者不能构成一个字母。</p>
+
+<p>分类讨论如下：</p>
+
+<p>当s[i]=0时，其只能与s[i-1]相组合(即组成10或20)，有：dp[i] = dp[i-2]</p>
+
+<p>当s[i-1]=1时，s[i]和s[i-1]可以组合，此时有：dp[i] = dp[i-1] + dp[i-2]</p>
+
+<p>当s[i-1]=2时，若s[i]&lt;=6，则可以组合，有：dp[i] = dp[i-1] + dp[i-2];若s[i]&gt;6，有：dp[i] = dp[i-1]</p>
+
+<pre><code class="language-C++">int numDecodings(string s) {
+	if (s.size() == 0 || s[0] == '0')
+		return 0;
+	int n = s.size();
+	int pre = 1, curr = 1; //dp[-1] = dp[0] = 1
+	for (int i = 1; i &lt; n; ++i) {
+		int tmp = curr;
+		if (s[i] == '0')
+			if (s[i - 1] == '1' || s[i - 1] == '2')
+				curr = pre;
+			else
+				return 0;
+		else if (s[i - 1] == '1' || (s[i - 1] == '2' &amp;&amp; s[i] &lt;= '6'))
+			curr = tmp + pre;
+		pre = tmp;
+	}
+	return curr;
+}
+</code></pre>
+<p>注：由于dp数组中只涉及当前元素前两个元素，所以可以使用两个变量代替数组，降低空间复杂度。</p>
+
+<h3 id="参考资料">参考资料</h3>
+<ol>
+  <li>https://cyc2018.github.io/CS-Notes/#/</li>
+  <li>https://labuladong.gitbook.io/algo/</li>
+  <li>https://leetcode-cn.com/problemset/all/</li>
+</ol>
+:ET

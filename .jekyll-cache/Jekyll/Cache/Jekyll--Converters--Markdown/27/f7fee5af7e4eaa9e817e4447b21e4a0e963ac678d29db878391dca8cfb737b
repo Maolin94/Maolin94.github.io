@@ -1,0 +1,17 @@
+I"i<pre><code class="language-C++">int maxDepth(TreeNode* root) {
+    return (root != NULL) ? max(maxDepth(root-&gt;left), maxDepth(root-&gt;right))+1 : 0;
+}
+</code></pre>
+
+<pre><code class="language-C++">
+</code></pre>
+
+<pre><code class="language-C++">
+</code></pre>
+
+<pre><code class="language-C++">
+</code></pre>
+
+<pre><code class="language-C++">
+</code></pre>
+:ET
